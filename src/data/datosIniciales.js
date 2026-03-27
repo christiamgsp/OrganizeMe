@@ -10,7 +10,7 @@ export const tableroInicial = {
     'columna-1': {
       id: 'columna-1',
       titulo: 'Por hacer',
-      tareasIds: ['tarea-1', 'tarea-2'], // Aquí guardamos el ORDEN de las tareas
+      tareasIds: ['tarea-1', 'tarea-2'],
     },
     'columna-2': {
       id: 'columna-2',
