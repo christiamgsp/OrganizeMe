@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { tableroInicial } from './data/datosIniciales';
+import Tarea from './components/Tarea';
 
 function App() {
   const [tablero, setTablero] = useState(tableroInicial);
@@ -10,7 +11,7 @@ function App() {
         <h1 className='text-slate-800 dark:text-slate-100 text-5xl font-extrabold tracking-tight inline-block pb-2'>
           Organize<span className='text-blue-600 dark:text-blue-400'>Me</span>
         </h1>
-        <p className='text-slate-50 dark:text-slate-400 mt-2 italic'>
+        <p className='text-slate-600 dark:text-slate-400 mt-2 italic'>
           Gestiona tus proyectos con estilo
         </p>
       </header>
@@ -37,12 +38,12 @@ function App() {
               </div>
 
               <ul className='space-y-4'>
+                {/* 2. Aquí usamos el componente Tarea con un map limpio */}
                 {columna.tareasIds.map((idTarea) => (
-                  <li
+                  <Tarea
                     key={idTarea}
-                    className='bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer font-medium'>
-                    {tablero.tareas[idTarea].contenido}
-                  </li>
+                    contenido={tablero.tareas[idTarea].contenido}
+                  />
                 ))}
               </ul>
 
