@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { tableroInicial } from './data/datosIniciales';
-import Tarea from './components/Tarea';
+import { Tarea } from './components/Tarea';
+import { Columna } from './components/Columna';
 
 function App() {
   const [tablero, setTablero] = useState(tableroInicial);
@@ -27,30 +28,12 @@ function App() {
           };
 
           return (
-            <div
+            <Columna
               key={idCol}
-              className='bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 w-80 transition-all'>
-              <div
-                className={`border-b-4 ${borderColors[idCol] || 'border-slate-400'} mb-4`}>
-                <h2 className='text-slate-700 dark:text-slate-300 font-bold pb-2 uppercase text-xs tracking-widest'>
-                  {columna.titulo}
-                </h2>
-              </div>
-
-              <ul className='space-y-4'>
-                {/* 2. Aquí usamos el componente Tarea con un map limpio */}
-                {columna.tareasIds.map((idTarea) => (
-                  <Tarea
-                    key={idTarea}
-                    contenido={tablero.tareas[idTarea].contenido}
-                  />
-                ))}
-              </ul>
-
-              <button className='mt-6 w-full py-2 text-sm font-semibold text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-colors border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-900'>
-                + Añadir tarjeta
-              </button>
-            </div>
+              columna={columna}
+              tareas={tablero.tareas}
+              colorClase={borderColors[idCol]}
+            />
           );
         })}
       </div>
