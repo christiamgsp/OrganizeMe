@@ -6,15 +6,14 @@ import { Columna } from './components/Columna';
 function App() {
   const [tablero, setTablero] = useState(tableroInicial);
 
-  const agregarTarea = (idColumna) => {
+  const agregarTarea = (idColumna, textoUsuario) => {
     const nuevoId = `id-${Date.now()}`;
-    const nuevaTarea = { id: nuevoId, contenido: 'Nueva Tarea' };
 
     setTablero((prev) => ({
       ...prev,
       tareas: {
         ...prev.tareas,
-        [nuevoId]: nuevaTarea,
+        [nuevoId]: { id: nuevoId, contenido: textoUsuario },
       },
       columnas: {
         ...prev.columnas,
@@ -63,11 +62,3 @@ function App() {
 }
 
 export default App;
-
-import { useState } from 'react';
-
-const Buscador = () => {
-  const [texto, setTexto] = useState('');
-
-  return <input type='text' value={texto} onChange={(e) => e.target.value} />;
-};

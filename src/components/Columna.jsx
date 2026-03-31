@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tarea } from './Tarea';
 
 export const Columna = ({ columna, tareas, colorClase, alAñadir }) => {
+  const [texto, setTexto] = useState('');
+
+  const manejarAñadir = () => {
+    if (texto.trim() === '') return;
+    alAñadir(columna.id, texto);
+    setTexto('');
+  };
+
   return (
     <div className='bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 w-80 transition-all'>
       <h2 className='text-slate-700 dark:text-slate-300 font-bold pb-2 uppercase text-xs tracking-widest'>
@@ -12,8 +20,15 @@ export const Columna = ({ columna, tareas, colorClase, alAñadir }) => {
           <Tarea key={idTarea} contenido={tareas[idTarea].contenido} />
         ))}
       </ul>
+      <input
+        type='text'
+        value={texto}
+        onChange={(e) => setTexto(e.target.value)}
+        placeholder='Escribe tu nueva tarea...'
+        className='w-full p-2 mb-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white'
+      />
       <button
-        onClick={() => alAñadir(columna.id)}
+        onClick={manejarAñadir}
         className='mt-6 w-full py-2 text-sm font-semibold text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border-2 border-dashed border-slate-200 hover:border-blue-200'>
         + Añadir tarjeta
       </button>
