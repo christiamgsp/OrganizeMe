@@ -6,6 +6,26 @@ import { Columna } from './components/Columna';
 function App() {
   const [tablero, setTablero] = useState(tableroInicial);
 
+  const agregarTarea = (idColumna) => {
+    const nuevoId = `id-${Date.now()}`;
+    const nuevaTarea = { id: nuevoId, contenido: 'Nueva Tarea' };
+
+    setTablero((prev) => ({
+      ...prev,
+      tareas: {
+        ...prev.tareas,
+        [nuevoId]: nuevaTarea,
+      },
+      columnas: {
+        ...prev.columnas,
+        [idColumna]: {
+          ...prev.columnas[idColumna],
+          tareasIds: [...prev.columnas[idColumna].tareasIds, nuevoId],
+        },
+      },
+    }));
+  };
+
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 font-sans transition-colors duration-500'>
       <header className='mb-12 text-center'>
@@ -33,6 +53,7 @@ function App() {
               columna={columna}
               tareas={tablero.tareas}
               colorClase={borderColors[idCol]}
+              alAñadir={agregarTarea}
             />
           );
         })}

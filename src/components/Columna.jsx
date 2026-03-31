@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tarea } from './Tarea';
 
-export const Columna = ({ columna, tareas, colorClase }) => {
+export const Columna = ({ columna, tareas, colorClase, alAñadir }) => {
   return (
     <div className='bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 w-80 transition-all'>
       <h2 className='text-slate-700 dark:text-slate-300 font-bold pb-2 uppercase text-xs tracking-widest'>
@@ -12,6 +12,11 @@ export const Columna = ({ columna, tareas, colorClase }) => {
           <Tarea key={idTarea} contenido={tareas[idTarea].contenido} />
         ))}
       </ul>
+      <button
+        onClick={() => alAñadir(columna.id)}
+        className='mt-6 w-full py-2 text-sm font-semibold text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border-2 border-dashed border-slate-200 hover:border-blue-200'>
+        + Añadir tarjeta
+      </button>
     </div>
   );
 };
