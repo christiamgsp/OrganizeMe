@@ -24,6 +24,22 @@ function App() {
       },
     }));
   };
+  const eliminarTarea = (idTarea, idColumna) => {
+    setTablero((prev) => {
+      const { [idTarea]: borrado, ...nuevasTareas } = prev.tareas;
+      const nuevosIds = prev.columnas[idColumna].tareasIds.filter(
+        (id) => id !== idTarea
+      );
+      return {
+        ...prev,
+        tareas: nuevasTareas,
+        columnas: {
+          ...prev.columnas,
+          [idColumna]: { ...prev.columnas[idColumna], tareasIds: nuevosIds },
+        },
+      };
+    });
+  };
 
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 font-sans transition-colors duration-500'>
@@ -53,6 +69,7 @@ function App() {
               tareas={tablero.tareas}
               colorClase={borderColors[idCol]}
               alAñadir={agregarTarea}
+              alBorrar={eliminarTarea}
             />
           );
         })}

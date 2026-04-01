@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { Tarea } from './Tarea';
 
-export const Columna = ({ columna, tareas, colorClase, alAñadir }) => {
+export const Columna = ({
+  columna,
+  tareas,
+  colorClase,
+  alAñadir,
+  alBorrar,
+}) => {
   const [texto, setTexto] = useState('');
 
   const manejarAñadir = () => {
@@ -17,7 +23,11 @@ export const Columna = ({ columna, tareas, colorClase, alAñadir }) => {
       </h2>
       <ul className='space-y-4'>
         {columna.tareasIds.map((idTarea) => (
-          <Tarea key={idTarea} contenido={tareas[idTarea].contenido} />
+          <Tarea
+            key={idTarea}
+            contenido={tareas[idTarea].contenido}
+            alBorrar={() => alBorrar(idTarea, columna.id)}
+          />
         ))}
       </ul>
       <input
