@@ -40,6 +40,24 @@ function App() {
       };
     });
   };
+  const moverTarea = (idTarea, idOrigen, idDestino) => {
+    setTablero((prev) => {
+      const listaLimpia = prev.columnas[idOrigen].tareasIds.filter(
+        (id) => id !== idTarea
+      );
+
+      const listaNueva = [...prev.columnas[idDestino].tareasIds, idTarea];
+
+      return {
+        ...prev,
+        columnas: {
+          ...prev.columnas,
+          [idOrigen]: { ...prev.columnas[idOrigen], tareasIds: listaLimpia },
+          [idDestino]: { ...prev.columnas[idDestino], tareasIds: listaNueva },
+        },
+      };
+    });
+  };
 
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 font-sans transition-colors duration-500'>

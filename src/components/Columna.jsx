@@ -40,7 +40,7 @@ export const Columna = ({
       <button
         onClick={manejarAñadir}
         className='mt-6 w-full py-2 text-sm font-semibold text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border-2 border-dashed border-slate-200 hover:border-blue-200'>
-        + Añadir tarjeta
+        ➕ Añadir tarjeta
       </button>
     </div>
   );
