@@ -4,9 +4,9 @@ import { Tarea } from './Tarea';
 export const Columna = ({
   columna,
   tareas,
-  colorClase,
   alAñadir,
   alBorrar,
+  moverTarea,
 }) => {
   const [texto, setTexto] = useState('');
 
@@ -15,6 +15,10 @@ export const Columna = ({
     alAñadir(columna.id, texto);
     setTexto('');
   };
+
+  const orden = ['columna-1', 'columna-2', 'columna-3'];
+  const miIndice = orden.indexOf(columna.id);
+  const siguienteColumnaId = orden[miIndice + 1];
 
   return (
     <div className='bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 w-80 transition-all'>
@@ -27,6 +31,11 @@ export const Columna = ({
             key={idTarea}
             contenido={tareas[idTarea].contenido}
             alBorrar={() => alBorrar(idTarea, columna.id)}
+            moverTarea={
+              siguienteColumnaId
+                ? () => moverTarea(idTarea, columna.id, siguienteColumnaId)
+                : null
+            }
           />
         ))}
       </ul>

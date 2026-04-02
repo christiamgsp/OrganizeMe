@@ -1,4 +1,4 @@
-export const Tarea = ({ contenido, id, alBorrar }) => (
+export const Tarea = ({ contenido, id, alBorrar, moverTarea }) => (
   <li className='flex items-center justify-between bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer font-medium group'>
     <span className='flex-1'>{contenido}</span>
 
@@ -20,5 +20,12 @@ export const Tarea = ({ contenido, id, alBorrar }) => (
         />
       </svg>
     </button>
+    {alBorrar && (
+      <button
+        onClick={moverTarea}
+        className='text-blue-500 hover:text-blue-700 cursor-pointer active:scale-95'>
+        →
+      </button>
+    )}
   </li>
 );
