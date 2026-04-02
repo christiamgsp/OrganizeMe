@@ -36,6 +36,7 @@ export const Columna = ({
                 ? () => moverTarea(idTarea, columna.id, siguienteColumnaId)
                 : null
             }
+            id={idTarea}
           />
         ))}
       </ul>

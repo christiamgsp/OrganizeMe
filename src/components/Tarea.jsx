@@ -20,7 +20,7 @@ export const Tarea = ({ contenido, id, alBorrar, moverTarea }) => (
         />
       </svg>
     </button>
-    {alBorrar && (
+    {moverTarea && (
       <button
         onClick={moverTarea}
         className='text-blue-500 hover:text-blue-700 cursor-pointer active:scale-95'>
