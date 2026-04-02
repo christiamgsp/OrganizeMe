@@ -20,8 +20,24 @@ export const Columna = ({
   const miIndice = orden.indexOf(columna.id);
   const siguienteColumnaId = orden[miIndice + 1];
 
+  const manejarArrastreSobre = (e) => {
+    e.preventDefault();
+  };
+
+  const manejarSoltar = (e) => {
+    const idTarea = e.dataTransfer.getData('idTarea');
+    const idOrigen = e.dataTransfer.getData('idOrigen');
+    const idDestino = columna.id;
+
+    if (idOrigen !== idDestino) {
+      moverTarea(idTarea, idOrigen, idDestino);
+    }
+  };
+
   return (
-    <div className='bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 w-80 transition-all'>
+    <div
+      onDragOver={manejarArrastreSobre}
+      className='bg-white ... border-2 border-transparent hover:border-blue-200'>
       <h2 className='text-slate-700 dark:text-slate-300 font-bold pb-2 uppercase text-xs tracking-widest'>
         {columna.titulo}
       </h2>
