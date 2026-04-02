@@ -88,6 +88,7 @@ function App() {
               colorClase={borderColors[idCol]}
               alAñadir={agregarTarea}
               alBorrar={eliminarTarea}
+              moverTarea={moverTarea}
             />
           );
         })}
