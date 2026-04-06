@@ -59,7 +59,40 @@ function App() {
       };
     });
   };
+  // La forma correcta en App.js
+  const editarTarea = (idTarea, nuevoTexto) => {
+    setTablero((prev) => ({
+      ...prev,
+      tareas: {
+        ...prev.tareas,
+        [idTarea]: {
+          ...prev.tareas[idTarea],
+          contenido: nuevoTexto,
+        },
+      },
+    }));
+  };
 
+  const reordenarTareasEnColumna = (idColumna, indiceOrigen, indiceDestino) => {
+    setTablero((prev) => {
+      const nuevaListaIds = [...prev.columnas[idColumna].tareasIds];
+
+      const [idMovido] = nuevaListaIds.splice(indiceOrigen, 1);
+
+      nuevaListaIds.splice(indiceDestino, 0, idMovido);
+
+      return {
+        ...prev,
+        columnas: {
+          ...prev.columnas,
+          [idColumna]: {
+            ...prev.columnas[idColumna],
+            tareasIds: nuevaListaIds,
+          },
+        },
+      };
+    });
+  };
   return (
     // bg-slate-50: El fondo global que hace resaltar las columnas blancas
     <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 font-sans transition-colors duration-500'>
