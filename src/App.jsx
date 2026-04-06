@@ -5,10 +5,16 @@ import { ref, onValue, set } from 'firebase/database';
 import { db } from './firebase/config';
 
 function App() {
-  const [tablero, setTablero] = useState(null); // Empezamos en null para saber si está cargando
+  const [tablero, setTablero] = useState(null);
 
-  // --- PERSISTENCIA ---
-  // Esta función es una "ayudante" para no repetir código
+  // Esta función asegura que el tablero siempre tenga la estructura mínima
+  const limpiarTablero = (datos) => ({
+    ...datos,
+    tareas: datos.tareas || {},
+    columnas: datos.columnas || {},
+    ordenDeColumnas: datos.ordenDeColumnas || [],
+  });
+
   const guardarEnNube = (nuevoTablero) => {
     set(ref(db, 'tablero'), nuevoTablero);
   };
@@ -17,20 +23,19 @@ function App() {
     const tableroRef = ref(db, 'tablero');
     const desuscribir = onValue(tableroRef, (snapshot) => {
       const datos = snapshot.val();
-      if (datos) {
-        setTablero(datos);
+      if (datos && datos.columnas) {
+        setTablero(limpiarTablero(datos));
       } else {
-        // Primera vez: subimos el inicial
+        console.log('Base de datos vacía. Inicializando...');
         guardarEnNube(tableroInicial);
       }
     });
     return () => desuscribir();
   }, []);
 
-  // --- FUNCIONES ACTUALIZADAS ---
-
   const agregarTarea = (idColumna, textoUsuario) => {
     const nuevoId = `id-${Date.now()}`;
+    const columnaActual = tablero.columnas[idColumna];
     const nuevoTablero = {
       ...tablero,
       tareas: {
@@ -40,8 +45,8 @@ function App() {
       columnas: {
         ...tablero.columnas,
         [idColumna]: {
-          ...tablero.columnas[idColumna],
-          tareasIds: [...tablero.columnas[idColumna].tareasIds, nuevoId],
+          ...columnaActual,
+          tareasIds: [...(columnaActual.tareasIds || []), nuevoId],
         },
       },
     };
@@ -50,7 +55,7 @@ function App() {
 
   const eliminarTarea = (idTarea, idColumna) => {
     const { [idTarea]: borrado, ...nuevasTareas } = tablero.tareas;
-    const nuevosIds = tablero.columnas[idColumna].tareasIds.filter(
+    const nuevosIds = (tablero.columnas[idColumna].tareasIds || []).filter(
       (id) => id !== idTarea
     );
     const nuevoTablero = {
@@ -65,10 +70,13 @@ function App() {
   };
 
   const moverTarea = (idTarea, idOrigen, idDestino) => {
-    const listaLimpia = tablero.columnas[idOrigen].tareasIds.filter(
+    const listaLimpia = (tablero.columnas[idOrigen].tareasIds || []).filter(
       (id) => id !== idTarea
     );
-    const listaNueva = [...tablero.columnas[idDestino].tareasIds, idTarea];
+    const listaNueva = [
+      ...(tablero.columnas[idDestino].tareasIds || []),
+      idTarea,
+    ];
     const nuevoTablero = {
       ...tablero,
       columnas: {
@@ -92,7 +100,7 @@ function App() {
   };
 
   const reordenarTarea = (idColumna, indiceOrigen, indiceDestino) => {
-    const nuevaListaIds = [...tablero.columnas[idColumna].tareasIds];
+    const nuevaListaIds = [...(tablero.columnas[idColumna].tareasIds || [])];
     const [idTareaMovida] = nuevaListaIds.splice(indiceOrigen, 1);
     nuevaListaIds.splice(indiceDestino, 0, idTareaMovida);
     const nuevoTablero = {
@@ -108,7 +116,6 @@ function App() {
     guardarEnNube(nuevoTablero);
   };
 
-  // Si aún no tenemos datos de la nube, mostramos un cargando
   if (!tablero)
     return (
       <div className='min-h-screen bg-slate-950 flex items-center justify-center text-white font-bold'>
@@ -117,16 +124,12 @@ function App() {
     );
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 font-sans transition-colors duration-500'>
+    <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 transition-colors duration-500'>
       <header className='mb-16 text-center'>
-        <h1 className='text-slate-900 dark:text-slate-100 text-6xl font-extrabold tracking-tighter inline-block pb-3'>
+        <h1 className='text-slate-900 dark:text-slate-100 text-6xl font-extrabold tracking-tighter'>
           Organize<span className='text-blue-600 dark:text-blue-400'>Me</span>
         </h1>
-        <p className='text-slate-600 dark:text-slate-400 mt-3 text-lg font-medium'>
-          Gestiona tus proyectos con estilo
-        </p>
       </header>
-
       <div className='flex gap-10 justify-center items-start'>
         {tablero.ordenDeColumnas.map((idCol) => (
           <Columna

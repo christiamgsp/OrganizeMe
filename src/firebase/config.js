@@ -1,4 +1,3 @@
-// src/firebase/config.js
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 
@@ -12,8 +11,5 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Inicializamos Firebase
 const app = initializeApp(firebaseConfig);
-
-// Exportamos la base de datos para usarla en App.jsx
 export const db = getDatabase(app);
