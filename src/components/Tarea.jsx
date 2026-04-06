@@ -37,6 +37,15 @@ export const Tarea = ({
       setEditando(false);
     }
   };
+  const manejarTecla = (e) => {
+    if (e.key === 'Enter') {
+      guardarCambio();
+    }
+    if (e.key === 'Escape') {
+      setNuevoTexto(contenido);
+      setEditando(false);
+    }
+  };
 
   return (
     <li
@@ -55,7 +64,7 @@ export const Tarea = ({
           autoFocus
           value={nuevoTexto}
           onChange={(e) => setNuevoTexto(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && guardarCambio()}
+          onKeyDown={manejarTecla}
           onBlur={guardarCambio}
           className='flex-1 bg-transparent outline-none text-slate-800 font-medium'
         />

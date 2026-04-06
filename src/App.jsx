@@ -5,22 +5,20 @@ import { Columna } from './components/Columna';
 function App() {
   const [tablero, setTablero] = useState(tableroInicial);
 
-  const agregarTarea = (idColumna, textoUsuario) => {
+  const agregarTarea = async (idColumna, textoUsuario) => {
+    console.log("Enviando a la 'API'...");
+
+    // Simulamos una espera de 1 segundo
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const nuevoId = `id-${Date.now()}`;
+
     setTablero((prev) => ({
       ...prev,
-      tareas: {
-        ...prev.tareas,
-        [nuevoId]: { id: nuevoId, contenido: textoUsuario },
-      },
-      columnas: {
-        ...prev.columnas,
-        [idColumna]: {
-          ...prev.columnas[idColumna],
-          tareasIds: [...prev.columnas[idColumna].tareasIds, nuevoId],
-        },
-      },
+      // ... (el resto de tu lógica de siempre)
     }));
+
+    console.log('¡Tarea guardada en la nube!');
   };
 
   const eliminarTarea = (idTarea, idColumna) => {
