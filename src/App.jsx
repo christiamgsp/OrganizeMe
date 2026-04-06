@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { tableroInicial } from './data/datosIniciales';
 import { Columna } from './components/Columna';
+import { useEffect } from 'react';
+import { ref, onValue, set } from 'firebase/database';
+import { db } from './firebase/config';
 
 function App() {
   const [tablero, setTablero] = useState(tableroInicial);
@@ -84,6 +87,23 @@ function App() {
       };
     });
   };
+
+  useEffect(() => {
+    const tableroRef = ref(db, 'tablero');
+
+    const desuscribir = onValue(tableroRef, (snapshot) => {
+      const datos = snapshot.val();
+
+      if (datos) {
+        setTablero(datos);
+      } else {
+        console.log('Nube vacía. Subiendo tablero inicial...');
+        set(tableroRef, tableroInicial);
+      }
+    });
+
+    return () => desuscribir();
+  }, []);
 
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 font-sans transition-colors duration-500'>
