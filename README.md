@@ -9,8 +9,8 @@
 
 <br />
 
-<img src="./public/organizeme1.png" alt="OrganizeMe Preview Light" width="400px">
-<img src="./public/organizeme2.png" alt="OrganizeMe Preview Dark" width="400px">
+<img src="./public/Organizeme1.png" alt="OrganizeMe Preview Light" width="400px">
+<img src="./public/Organizeme2.png" alt="OrganizeMe Preview Dark" width="400px">
 
 <p><i>Gestión de tareas eficiente con sincronización en la nube y persistencia de datos en tiempo real.</i></p>
 
