@@ -7,7 +7,6 @@ function App() {
 
   const agregarTarea = (idColumna, textoUsuario) => {
     const nuevoId = `id-${Date.now()}`;
-
     setTablero((prev) => ({
       ...prev,
       tareas: {
@@ -46,9 +45,7 @@ function App() {
       const listaLimpia = prev.columnas[idOrigen].tareasIds.filter(
         (id) => id !== idTarea
       );
-
       const listaNueva = [...prev.columnas[idDestino].tareasIds, idTarea];
-
       return {
         ...prev,
         columnas: {
@@ -59,28 +56,22 @@ function App() {
       };
     });
   };
-  // La forma correcta en App.js
+
   const editarTarea = (idTarea, nuevoTexto) => {
     setTablero((prev) => ({
       ...prev,
       tareas: {
         ...prev.tareas,
-        [idTarea]: {
-          ...prev.tareas[idTarea],
-          contenido: nuevoTexto,
-        },
+        [idTarea]: { ...prev.tareas[idTarea], contenido: nuevoTexto },
       },
     }));
   };
 
-  const reordenarTareasEnColumna = (idColumna, indiceOrigen, indiceDestino) => {
+  const reordenarTarea = (idColumna, indiceOrigen, indiceDestino) => {
     setTablero((prev) => {
       const nuevaListaIds = [...prev.columnas[idColumna].tareasIds];
-
-      const [idMovido] = nuevaListaIds.splice(indiceOrigen, 1);
-
-      nuevaListaIds.splice(indiceDestino, 0, idMovido);
-
+      const [idTareaMovida] = nuevaListaIds.splice(indiceOrigen, 1);
+      nuevaListaIds.splice(indiceDestino, 0, idTareaMovida);
       return {
         ...prev,
         columnas: {
@@ -93,8 +84,8 @@ function App() {
       };
     });
   };
+
   return (
-    // bg-slate-50: El fondo global que hace resaltar las columnas blancas
     <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 font-sans transition-colors duration-500'>
       <header className='mb-16 text-center'>
         <h1 className='text-slate-900 dark:text-slate-100 text-6xl font-extrabold tracking-tighter inline-block pb-3'>
@@ -106,20 +97,18 @@ function App() {
       </header>
 
       <div className='flex gap-10 justify-center items-start'>
-        {tablero.ordenDeColumnas.map((idCol) => {
-          const columna = tablero.columnas[idCol];
-
-          return (
-            <Columna
-              key={idCol}
-              columna={columna}
-              tareas={tablero.tareas}
-              alAñadir={agregarTarea}
-              alBorrar={eliminarTarea}
-              moverTarea={moverTarea}
-            />
-          );
-        })}
+        {tablero.ordenDeColumnas.map((idCol) => (
+          <Columna
+            key={idCol}
+            columna={tablero.columnas[idCol]}
+            tareas={tablero.tareas}
+            alAñadir={agregarTarea}
+            alBorrar={eliminarTarea}
+            alEditar={editarTarea}
+            moverTarea={moverTarea}
+            reordenarTarea={reordenarTarea}
+          />
+        ))}
       </div>
     </div>
   );
