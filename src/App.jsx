@@ -1,109 +1,120 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { tableroInicial } from './data/datosIniciales';
 import { Columna } from './components/Columna';
-import { useEffect } from 'react';
 import { ref, onValue, set } from 'firebase/database';
 import { db } from './firebase/config';
 
 function App() {
-  const [tablero, setTablero] = useState(tableroInicial);
+  const [tablero, setTablero] = useState(null); // Empezamos en null para saber si está cargando
 
-  const agregarTarea = (idColumna, textoUsuario) => {
-    const nuevoId = `id-${Date.now()}`;
-    setTablero((prev) => ({
-      ...prev,
-      tareas: {
-        ...prev.tareas,
-        [nuevoId]: { id: nuevoId, contenido: textoUsuario },
-      },
-      columnas: {
-        ...prev.columnas,
-        [idColumna]: {
-          ...prev.columnas[idColumna],
-          tareasIds: [...prev.columnas[idColumna].tareasIds, nuevoId],
-        },
-      },
-    }));
-  };
-
-  const eliminarTarea = (idTarea, idColumna) => {
-    setTablero((prev) => {
-      const { [idTarea]: borrado, ...nuevasTareas } = prev.tareas;
-      const nuevosIds = prev.columnas[idColumna].tareasIds.filter(
-        (id) => id !== idTarea
-      );
-      return {
-        ...prev,
-        tareas: nuevasTareas,
-        columnas: {
-          ...prev.columnas,
-          [idColumna]: { ...prev.columnas[idColumna], tareasIds: nuevosIds },
-        },
-      };
-    });
-  };
-
-  const moverTarea = (idTarea, idOrigen, idDestino) => {
-    setTablero((prev) => {
-      const listaLimpia = prev.columnas[idOrigen].tareasIds.filter(
-        (id) => id !== idTarea
-      );
-      const listaNueva = [...prev.columnas[idDestino].tareasIds, idTarea];
-      return {
-        ...prev,
-        columnas: {
-          ...prev.columnas,
-          [idOrigen]: { ...prev.columnas[idOrigen], tareasIds: listaLimpia },
-          [idDestino]: { ...prev.columnas[idDestino], tareasIds: listaNueva },
-        },
-      };
-    });
-  };
-
-  const editarTarea = (idTarea, nuevoTexto) => {
-    setTablero((prev) => ({
-      ...prev,
-      tareas: {
-        ...prev.tareas,
-        [idTarea]: { ...prev.tareas[idTarea], contenido: nuevoTexto },
-      },
-    }));
-  };
-
-  const reordenarTarea = (idColumna, indiceOrigen, indiceDestino) => {
-    setTablero((prev) => {
-      const nuevaListaIds = [...prev.columnas[idColumna].tareasIds];
-      const [idTareaMovida] = nuevaListaIds.splice(indiceOrigen, 1);
-      nuevaListaIds.splice(indiceDestino, 0, idTareaMovida);
-      return {
-        ...prev,
-        columnas: {
-          ...prev.columnas,
-          [idColumna]: {
-            ...prev.columnas[idColumna],
-            tareasIds: nuevaListaIds,
-          },
-        },
-      };
-    });
+  // --- PERSISTENCIA ---
+  // Esta función es una "ayudante" para no repetir código
+  const guardarEnNube = (nuevoTablero) => {
+    set(ref(db, 'tablero'), nuevoTablero);
   };
 
   useEffect(() => {
     const tableroRef = ref(db, 'tablero');
-
     const desuscribir = onValue(tableroRef, (snapshot) => {
       const datos = snapshot.val();
-
       if (datos) {
         setTablero(datos);
       } else {
-        console.log('Nube vacía. Subiendo tablero inicial...');
-        set(tableroRef, tableroInicial);
+        // Primera vez: subimos el inicial
+        guardarEnNube(tableroInicial);
       }
     });
-
     return () => desuscribir();
   }, []);
+
+  // --- FUNCIONES ACTUALIZADAS ---
+
+  const agregarTarea = (idColumna, textoUsuario) => {
+    const nuevoId = `id-${Date.now()}`;
+    const nuevoTablero = {
+      ...tablero,
+      tareas: {
+        ...tablero.tareas,
+        [nuevoId]: { id: nuevoId, contenido: textoUsuario },
+      },
+      columnas: {
+        ...tablero.columnas,
+        [idColumna]: {
+          ...tablero.columnas[idColumna],
+          tareasIds: [...tablero.columnas[idColumna].tareasIds, nuevoId],
+        },
+      },
+    };
+    guardarEnNube(nuevoTablero);
+  };
+
+  const eliminarTarea = (idTarea, idColumna) => {
+    const { [idTarea]: borrado, ...nuevasTareas } = tablero.tareas;
+    const nuevosIds = tablero.columnas[idColumna].tareasIds.filter(
+      (id) => id !== idTarea
+    );
+    const nuevoTablero = {
+      ...tablero,
+      tareas: nuevasTareas,
+      columnas: {
+        ...tablero.columnas,
+        [idColumna]: { ...tablero.columnas[idColumna], tareasIds: nuevosIds },
+      },
+    };
+    guardarEnNube(nuevoTablero);
+  };
+
+  const moverTarea = (idTarea, idOrigen, idDestino) => {
+    const listaLimpia = tablero.columnas[idOrigen].tareasIds.filter(
+      (id) => id !== idTarea
+    );
+    const listaNueva = [...tablero.columnas[idDestino].tareasIds, idTarea];
+    const nuevoTablero = {
+      ...tablero,
+      columnas: {
+        ...tablero.columnas,
+        [idOrigen]: { ...tablero.columnas[idOrigen], tareasIds: listaLimpia },
+        [idDestino]: { ...tablero.columnas[idDestino], tareasIds: listaNueva },
+      },
+    };
+    guardarEnNube(nuevoTablero);
+  };
+
+  const editarTarea = (idTarea, nuevoTexto) => {
+    const nuevoTablero = {
+      ...tablero,
+      tareas: {
+        ...tablero.tareas,
+        [idTarea]: { ...tablero.tareas[idTarea], contenido: nuevoTexto },
+      },
+    };
+    guardarEnNube(nuevoTablero);
+  };
+
+  const reordenarTarea = (idColumna, indiceOrigen, indiceDestino) => {
+    const nuevaListaIds = [...tablero.columnas[idColumna].tareasIds];
+    const [idTareaMovida] = nuevaListaIds.splice(indiceOrigen, 1);
+    nuevaListaIds.splice(indiceDestino, 0, idTareaMovida);
+    const nuevoTablero = {
+      ...tablero,
+      columnas: {
+        ...tablero.columnas,
+        [idColumna]: {
+          ...tablero.columnas[idColumna],
+          tareasIds: nuevaListaIds,
+        },
+      },
+    };
+    guardarEnNube(nuevoTablero);
+  };
+
+  // Si aún no tenemos datos de la nube, mostramos un cargando
+  if (!tablero)
+    return (
+      <div className='min-h-screen bg-slate-950 flex items-center justify-center text-white font-bold'>
+        Cargando tablero...
+      </div>
+    );
 
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 font-sans transition-colors duration-500'>
