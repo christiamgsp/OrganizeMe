@@ -14,21 +14,24 @@ function App() {
     editarTarea,
     reordenarTarea,
   } = useTablero();
+
   if (!tablero) {
     return (
-      <div className='min-h-screen bg-slate-950 flex items-center justify-center text-white font-bold'>
+      <div className='min-h-screen bg-slate-950 flex items-center justify-center text-white font-bold p-4 text-center'>
         Cargando tablero...
       </div>
     );
   }
+
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-10 transition-colors duration-500'>
-      <header className='mb-16 text-center'>
-        <h1 className='text-slate-900 dark:text-slate-100 text-6xl font-extrabold tracking-tighter'>
+    <div className='min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-10 transition-colors duration-500'>
+      <header className='mb-10 md:mb-16 text-center'>
+        <h1 className='text-slate-900 dark:text-slate-100 text-4xl md:text-6xl font-extrabold tracking-tighter'>
           Organize<span className='text-blue-600 dark:text-blue-400'>Me</span>
         </h1>
       </header>
-      <div className='flex gap-10 justify-center items-start'>
+
+      <div className='flex flex-col md:flex-row gap-6 md:gap-10 justify-center items-start'>
         {tablero.ordenDeColumnas.map((idCol) => (
           <Columna
             key={idCol}
@@ -47,4 +50,3 @@ function App() {
 }
 
 export default App;
-// update config

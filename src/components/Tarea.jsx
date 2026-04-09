@@ -37,10 +37,9 @@ export const Tarea = ({
       setEditando(false);
     }
   };
+
   const manejarTecla = (e) => {
-    if (e.key === 'Enter') {
-      guardarCambio();
-    }
+    if (e.key === 'Enter') guardarCambio();
     if (e.key === 'Escape') {
       setNuevoTexto(contenido);
       setEditando(false);
@@ -54,10 +53,10 @@ export const Tarea = ({
       onDragEnd={(e) => (e.target.style.opacity = '1')}
       onDragOver={(e) => e.preventDefault()}
       onDrop={manejarSoltar}
-      className={`flex items-center justify-between p-4 rounded-xl shadow-sm border transition-all duration-200 group ${
+      className={`flex items-center justify-between p-3 md:p-4 rounded-xl shadow-sm border transition-all duration-200 group ${
         editando
           ? 'bg-white border-blue-400 ring-2 ring-blue-100'
-          : 'bg-blue-50 border-blue-200 hover:bg-blue-100 hover:border-blue-300 cursor-grab active:cursor-grabbing'
+          : 'bg-blue-50 dark:bg-slate-800/50 border-blue-100 dark:border-slate-700 hover:bg-blue-100 dark:hover:bg-slate-800 cursor-grab active:cursor-grabbing'
       }`}>
       {editando ? (
         <input
@@ -66,11 +65,11 @@ export const Tarea = ({
           onChange={(e) => setNuevoTexto(e.target.value)}
           onKeyDown={manejarTecla}
           onBlur={guardarCambio}
-          className='flex-1 bg-transparent outline-none text-slate-800 font-medium'
+          className='flex-1 bg-transparent outline-none text-slate-800 dark:text-slate-200 font-medium'
         />
       ) : (
         <span
-          className='flex-1 text-slate-800 font-medium'
+          className='flex-1 text-slate-800 dark:text-slate-200 font-medium break-words'
           onDoubleClick={() => setEditando(true)}>
           {contenido}
         </span>
@@ -79,7 +78,7 @@ export const Tarea = ({
       {!editando && (
         <button
           onClick={alBorrar}
-          className='p-2 text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity'>
+          className='p-2 text-red-400 hover:text-red-600 md:opacity-0 md:group-hover:opacity-100 transition-opacity ml-2'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             className='h-5 w-5'
